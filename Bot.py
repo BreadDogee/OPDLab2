@@ -5,7 +5,6 @@ import time
 from telebot import types
 
 bot_token = '6943956480:AAHhHUWlsqA9L0aEjowQPqcjkmFvBEUrjik'
-chat_id = '5375662513'
 def parse():
     url = 'https://ru.myfin.by/currency/usd/omsk'
     page = requests.get(url)
@@ -109,25 +108,30 @@ def bot():
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         button1 = types.KeyboardButton("Сбросить значение")
         markup.add(button1)
-        bot.send_message(message.chat.id, text="Подсказка: для сброса значения вы всегда можете нажать на кнопку ;)",reply_markup=markup)
+        bot.send_message(message.chat.id, text="Подсказка: для сброса значения вы всегда можете нажать на кнопку ;)",
+                         reply_markup=markup)
         while True:
             new_value = parse()
+            if lower_barrier is None:
+                return
             if new_value < lower_barrier:
-                message = f'Курс доллара к рублю упал ниже установленной границы. Текущее значение: {new_value}'
-                bot.send_message(chat_id, message)
+                msg = f'Курс доллара к рублю упал ниже установленной границы. Текущее значение: {new_value}'
+                bot.send_message(message.chat.id, msg)
                 time.sleep(frequency_checked)
-
 
     def check_upper(message):
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         button1 = types.KeyboardButton("Сбросить значение")
         markup.add(button1)
-        bot.send_message(message.chat.id, text="Подсказка: для сброса значения вы всегда можете нажать на кнопку ;)", reply_markup=markup)
+        bot.send_message(message.chat.id, text="Подсказка: для сброса значения вы всегда можете нажать на кнопку ;)",
+                         reply_markup=markup)
         while True:
             new_value = parse()
+            if upper_barrier is None:
+                return
             if new_value > upper_barrier:
-                message = f'Курс доллара к рублю поднялся выше установленной границы. Текущее значение: {new_value}'
-                bot.send_message(chat_id, message)
+                msg = f'Курс доллара к рублю поднялся выше установленной границы. Текущее значение: {new_value}'
+                bot.send_message(message.chat.id, msg)
                 time.sleep(frequency_checked)
 
     bot.infinity_polling()
